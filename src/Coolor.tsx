@@ -29,6 +29,7 @@ export function Coolor({index, store}: {
 }) {
 
     const palette = store(x => x.palette);
+    const deleteColor = store(x => x.deleteColor);
     const lock = store(x => x.lock);
     const isLocked = store(x => x.isLocked)[index];
     const randomizeSingle = store(x => x.randomizeSingle);
@@ -36,6 +37,7 @@ export function Coolor({index, store}: {
     const dark = getLuminance(...hex2rgb(palette[index])) > 0.5;
     const name = getColorName(palette[index]);
     const color = dark ? "#000000" : "#ffffff"
+
     return <div className={"coolor"} style={{
         // transition: `200ms`,
         backgroundColor: palette[index],
@@ -45,6 +47,11 @@ export function Coolor({index, store}: {
         alignItems: 'center',
         gap: 5
     }}>
+        <ImageButton
+            color={color}
+            src={'src/icons/trash.svg'}
+            onClick={() => deleteColor(index)}
+        />
         <ImageButton
             color={color}
             src={'src/icons/shuffle.svg'}
@@ -64,7 +71,19 @@ export function Coolor({index, store}: {
             src={isLocked ? 'src/icons/lock.svg' : 'src/icons/unlock.svg'}
             onClick={() => lock(index)}
         />
-        <div style={{fontFamily: "monospace", userSelect: 'none', marginTop: 40, color}}>
+        <div style={{fontFamily: "monospace", userSelect: 'none', marginTop: 40, color}}
+            onClick={() => {
+                //@ts-ignore
+                const eyeDropper = new EyeDropper();
+                eyeDropper.open()
+                    .then(result => {
+                        console.log("Выбранный цвет:", result.sRGBHex);
+                    })
+                    .catch(e => {
+                        console.log("Пользователь отменил выбор или произошла ошибка");
+                    });
+            }}
+        >
             {name.name}
             {/*({name.distance.toFixed(1)})*/}
         </div>

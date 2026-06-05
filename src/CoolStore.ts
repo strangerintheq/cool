@@ -15,6 +15,7 @@ export type CoolStore = CoolStoreInitialData & {
     isShades: boolean[];
     setPalette(palette: Palette);
     lock(index: number);
+    deleteColor(index: number);
     shades(index: number);
     randomizeNotLocked();
     randomizeSingle(index: number);
@@ -62,6 +63,12 @@ export function createCoolStore({palette}: CoolStoreInitialData): CoolStoreType 
 
             randomizeSingle(index: number) {
                 setColor(index, randomColor());
+            },
+
+            deleteColor(index: number) {
+                const palette = [...get().palette];
+                palette.splice(index, 1)
+                set({palette})
             },
 
             setColor
