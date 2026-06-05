@@ -1,11 +1,10 @@
 import * as React from "preact";
-import {CoolStore} from "./CoolStore";
-import {StoreApi, UseBoundStore} from "zustand";
+import {CoolStoreType} from "./CoolStore";
 import {Coolor} from "./Coolor";
 import {useEffect} from "preact/compat";
 import {Shades} from "./Shades";
 
-export function Cool({store}:{store: UseBoundStore<StoreApi<CoolStore>>}) {
+export function Cool({store}:{store: CoolStoreType}) {
     const palette = store(x => x.palette)
     const isShades = store(x => x.isShades)
     const randomizeNotLocked = store(x => x.randomizeNotLocked)

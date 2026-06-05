@@ -1,6 +1,6 @@
 import {Color} from "./CoolStore";
 
-export function rgb2hsl(r, g, b) {
+export function rgb2hsl(r, g, b): [number, number, number] {
     const max = Math.max(r, g, b);
     const min = Math.min(r, g, b);
     const l = (max + min) / 2;
@@ -14,10 +14,10 @@ export function rgb2hsl(r, g, b) {
     return [h/6, s, l];
 }
 
-export function hsl2rgb(h, s, l) {
+export function hsl2rgb(h, s, l): [number, number, number] {
     const k = n => (n + h * 12) % 12;
     const a = s * Math.min(l, 1 - l);
-    return [0, 8, 4].map(n => l - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1)));
+    return [0, 8, 4].map(n => l - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1))) as [number, number, number];
 }
 
 export function hex2rgb(hex: Color): [number,number,number] {
@@ -45,13 +45,13 @@ export function rgb2hex(r, g, b): Color {
     return `#${toHex(r)}${toHex(g)}${toHex(b)}`.toUpperCase() as Color;
 }
 
-export function isGray(r, g, b, tolerance = 0.03) {
+export function isGray(r, g, b, tolerance = 0.03): boolean {
     const max = Math.max(r, g, b);
     const min = Math.min(r, g, b);
     return (max - min) <= tolerance;
 }
 
-export function isSameColor(color1, color2, tolerance = 0.03) {
+export function isSameColor(color1, color2, tolerance = 0.03): boolean {
     const [r,g,b] = hex2rgb(color1)
     const [R,G,B] = hex2rgb(color2)
     const dr = r - R;
@@ -61,6 +61,6 @@ export function isSameColor(color1, color2, tolerance = 0.03) {
     return distance <= tolerance;
 }
 
-export function getLuminance(r, g, b) {
+export function getLuminance(r, g, b): number {
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }

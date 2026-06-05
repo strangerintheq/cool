@@ -1,5 +1,7 @@
 import {create, StoreApi, UseBoundStore} from "zustand";
 
+export type CoolStoreType = UseBoundStore<StoreApi<CoolStore>>;
+
 export type Color = `#${string}`
 
 export type Palette = Color[];
@@ -16,20 +18,21 @@ export type CoolStore = CoolStoreInitialData & {
     shades(index: number);
     randomizeNotLocked();
     randomizeSingle(index: number);
+    setColor(index:number, color:Color);
 }
 
 type Mode = 'isLocked' | 'isShades';
 
-export function createCoolStore({palette}: CoolStoreInitialData) : UseBoundStore<StoreApi<CoolStore>>{
+export function createCoolStore({palette}: CoolStoreInitialData): CoolStoreType {
     return create<CoolStore>((
         set,
         get
     ) => {
 
-        function mode(index: number, mode: Mode) {
-            const isMode = [...get()[mode]];
-            isMode[index] = !isMode[index];
-            set({[mode]:isMode});
+        function setColor(index: number, color: Color) {
+            const palette = [...get().palette];
+            palette[index] = color;
+            set({palette, isShades: palette.map(x => false)});
         }
 
         return {
@@ -43,11 +46,13 @@ export function createCoolStore({palette}: CoolStoreInitialData) : UseBoundStore
             },
 
             lock(index: number) {
-                mode(index, "isLocked");
+                const isLocked = [...get().isLocked];
+                isLocked[index] = !isLocked[index];
+                set({isLocked});
             },
 
             shades(index: number) {
-                mode(index, "isShades");
+                set({isShades: get().palette.map((_, i) => i === index)});
             },
 
             randomizeNotLocked() {
@@ -56,17 +61,17 @@ export function createCoolStore({palette}: CoolStoreInitialData) : UseBoundStore
             },
 
             randomizeSingle(index: number) {
-                const palette = [...get().palette];
-                palette[index] = randomColor()
-                set({palette});
-            }
+                setColor(index, randomColor());
+            },
+
+            setColor
 
         };
     });
 }
 
 function randomColor(): Color {
-    return `#${[...Array(6)].map(x => ((Math.random()*16)|0).toString(16)).join("")}`;
+    return `#${[...Array(6)].map(x => ((Math.random() * 16) | 0).toString(16)).join("")}`;
 }
 
 function generatePalette(palette: Color[], isLocked: boolean[]): Palette {

@@ -8,7 +8,9 @@
     "@vitejs/plugin-react": "^5.0.4",
     "preact": "latest",
     "vite": "latest",
-    "zustand": "latest"
+    "zustand": "latest",
+    "color-name-list": "^14.40.0",
+    "nearest-color": "^0.4.4"
   },
   "devDependencies": {
     "@types/node": "^24.9.1"

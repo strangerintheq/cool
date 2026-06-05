@@ -1,6 +1,7 @@
 import * as React from "preact/compat";
 import {useEffect, useRef} from "preact/compat";
 import {css} from "./Css";
+import {Color} from "./CoolStore";
 
 const div = document.createElement('div`')
 
@@ -8,20 +9,24 @@ css(`
     svg.button {
         stroke-width: 1;
         cursor: pointer;
-        transition: 200ms;
+        // transition: 200ms;
+        border-radius: 6px;
     }
     svg.button:hover {
         transform: scale(1.1);
         stroke-width: 1.5;
+        background-color: #fff4;
     }
 `)
 
-export function ImageButton({src, onClick, dark}:{
+export function ImageButton({src, onClick, color, size = 32, pad = 3}:{
     src: string;
     onClick?;
-    dark:boolean
+    color: Color;
+    size?: number;
+    pad?: number;
 }) {
-    const color = dark ? "#000000" : "#ffffff"
+
     const ref = useRef();
     useEffect(() => {
         fetch(src).then(r => r.text()).then(r => {
@@ -33,9 +38,9 @@ export function ImageButton({src, onClick, dark}:{
     return <svg
         className={"button"}
         onClick={onClick}
-        width={32}
-        height={32}
-        viewBox={"0 0 24 24"}
+        width={size}
+        height={size}
+        viewBox={[0-pad,0-pad,24+pad*2,24+pad*2].join(" ")}
         fill={'none'}
         stroke={color}
         ref={ref}
