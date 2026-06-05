@@ -19,9 +19,10 @@ css(`
     }
 `)
 
-export function ImageButton({src, onClick, color, size = 32, pad = 3}:{
+export function ImageButton({src, onClick, color, size = 32, pad = 3, onPointerDown}:{
     src: string;
     onClick?;
+    onPointerDown?;
     color: Color;
     size?: number;
     pad?: number;
@@ -36,6 +37,7 @@ export function ImageButton({src, onClick, color, size = 32, pad = 3}:{
         })
     });
     return <svg
+        onPointerDown={onPointerDown}
         className={"button"}
         onClick={onClick}
         width={size}

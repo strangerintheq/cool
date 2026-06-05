@@ -5,6 +5,7 @@ import {getLuminance, hex2rgb} from "./colorFunctions";
 import {css} from "./Css";
 import { colornames } from 'color-name-list';
 import  nearestColor  from 'nearest-color';
+import {useRef} from "preact/compat";
 
 css(`
     div.coolor:hover svg.button {
@@ -28,6 +29,7 @@ export function Coolor({index, store}: {
     store: CoolStoreType
 }) {
 
+    const ref = useRef();
     const palette = store(x => x.palette);
     const deleteColor = store(x => x.deleteColor);
     const lock = store(x => x.lock);
@@ -38,7 +40,30 @@ export function Coolor({index, store}: {
     const name = getColorName(palette[index]);
     const color = dark ? "#000000" : "#ffffff"
 
-    return <div className={"coolor"} style={{
+    function startMove(e) {
+
+
+        function move(e1) {
+            const dx = e1.clientX - e.clientX;
+            //@ts-ignore
+            ref.current
+                .style.transform = `translate(${dx}px)`
+
+        }
+
+        function up() {
+            removeEventListener("pointerup", up)
+            removeEventListener("pointermove", move)
+            //@ts-ignore
+            ref.current
+                .style.transform = `translate(0px)`
+        }
+
+        addEventListener("pointerup", up);
+        addEventListener("pointermove", move);
+    }
+
+    return <div ref={ref} className={"coolor"} style={{
         // transition: `200ms`,
         backgroundColor: palette[index],
         display: 'flex',
@@ -61,6 +86,11 @@ export function Coolor({index, store}: {
             color={color}
             src={'src/icons/adjustments.svg'}
             onClick={() => shades(index)}
+        />
+        <ImageButton
+            color={color}
+            src={'src/icons/left-right-arrow.svg'}
+            onPointerDown={startMove}
         />
         <ImageButton
             color={color}
