@@ -5,7 +5,7 @@ import {Color} from "./CoolStore";
 
 const div = document.createElement('div`')
 
-css(`
+css(`<style>
     svg.button {
         stroke-width: 1;
         cursor: pointer;
@@ -17,7 +17,7 @@ css(`
         stroke-width: 1.5;
         background-color: #fff4;
     }
-`)
+</style>`)
 
 export function ImageButton({src, onClick, color, size = 32, pad = 3, onPointerDown}:{
     src: string;
@@ -35,7 +35,7 @@ export function ImageButton({src, onClick, color, size = 32, pad = 3, onPointerD
             //@ts-ignore
             ref.current.innerHTML = div.querySelector("svg").innerHTML;
         })
-    });
+    }, [src]);
     return <svg
         onPointerDown={onPointerDown}
         className={"button"}

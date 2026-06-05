@@ -3,18 +3,18 @@ import {CoolStoreType} from "./CoolStore";
 import {ImageButton} from "./ImageButton";
 import {getLuminance, hex2rgb} from "./colorFunctions";
 import {css} from "./Css";
-import { colornames } from 'color-name-list';
-import  nearestColor  from 'nearest-color';
-import {useRef} from "preact/compat";
+import {colornames} from 'color-name-list';
+import nearestColor from 'nearest-color';
+import {useEffect, useRef} from "preact/compat";
 
-css(`
+css(`<style>
     div.coolor:hover svg.button {
         opacity: 1;
     }
     div.coolor svg.button {
         opacity: 0;
     }
-`)
+</style>`)
 
 const colorMap = colornames.reduce((o, color) => {
     o[color.name] = color.hex;
@@ -38,25 +38,39 @@ export function Coolor({index, store}: {
     const shades = store(x => x.shades);
     const dark = getLuminance(...hex2rgb(palette[index])) > 0.5;
     const name = getColorName(palette[index]);
-    const color = dark ? "#000000" : "#ffffff"
+    const color = dark ? "#000000" : "#ffffff";
+    const offset = store(x => x.sort)[index]
+    const setSort = store(x => x.setSort);
+    const applySort = store(x => x.applySort);
 
     function startMove(e) {
-
-
         function move(e1) {
-            const dx = e1.clientX - e.clientX;
-            //@ts-ignore
-            ref.current
-                .style.transform = `translate(${dx}px)`
-
+            const node = ref.current as HTMLDivElement;
+            const width = node.clientWidth;
+            const n = palette.length;
+            let dx = e1.clientX - e.clientX;
+            dx = Math.min(dx, width * (n - index - 1))
+            dx = Math.max(dx, -width * (index))
+            node.style.transition = `0s`;
+            node.style.zIndex = "1";
+            setSort(palette.map((_, i) => {
+                if (i === index)
+                    return dx;
+                if (i > index && dx > (i - index - 0.5) * width)
+                    return -width
+                else if (i < index && dx < -(index - i - 0.5) * width)
+                    return width
+                return 0
+            }))
         }
 
         function up() {
             removeEventListener("pointerup", up)
             removeEventListener("pointermove", move)
-            //@ts-ignore
-            ref.current
-                .style.transform = `translate(0px)`
+            const node = ref.current as HTMLDivElement;
+            node.style.zIndex = "0"
+            // node.style.transition = `200ms`;
+            applySort(node.clientWidth)
         }
 
         addEventListener("pointerup", up);
@@ -64,6 +78,7 @@ export function Coolor({index, store}: {
     }
 
     return <div ref={ref} className={"coolor"} style={{
+        transform: `translate(${offset}px)`,
         // transition: `200ms`,
         backgroundColor: palette[index],
         display: 'flex',
@@ -102,17 +117,17 @@ export function Coolor({index, store}: {
             onClick={() => lock(index)}
         />
         <div style={{fontFamily: "monospace", userSelect: 'none', marginTop: 40, color}}
-            onClick={() => {
-                //@ts-ignore
-                const eyeDropper = new EyeDropper();
-                eyeDropper.open()
-                    .then(result => {
-                        console.log("Выбранный цвет:", result.sRGBHex);
-                    })
-                    .catch(e => {
-                        console.log("Пользователь отменил выбор или произошла ошибка");
-                    });
-            }}
+             onClick={() => {
+                 //@ts-ignore
+                 const eyeDropper = new EyeDropper();
+                 eyeDropper.open()
+                     .then(result => {
+                         console.log("Выбранный цвет:", result.sRGBHex);
+                     })
+                     .catch(e => {
+                         console.log("Пользователь отменил выбор или произошла ошибка");
+                     });
+             }}
         >
             {name.name}
             {/*({name.distance.toFixed(1)})*/}
