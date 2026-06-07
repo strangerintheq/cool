@@ -80,14 +80,19 @@ export function createCoolStore({palette}: CoolStoreInitialData): CoolStoreType 
             },
 
             applySort(width: number) {
-                let {sort, palette} = get();
-                palette = [...palette]
-                palette.sort((a, b) => {
-                    let ia = palette.indexOf(a);
-                    let ib = palette.indexOf(b)
-                    return (ia*width+sort[ia]) - (ib*width+sort[ib])
+                const {sort, palette, isLocked} = get();
+                const tmp = palette
+                    .map((x: Color, i: number) => [x, isLocked[i]])
+                    .sort((a: [Color, boolean], b: [Color, boolean]) => {
+                        let ia = palette.indexOf(a[0] as Color);
+                        let ib = palette.indexOf(b[0] as Color)
+                        return (ia*width+sort[ia]) - (ib*width+sort[ib])
+                    }) as [Color, boolean][];
+                set({
+                    palette: tmp.map(x => x[0]),
+                    isLocked: tmp.map(x => x[1]),
+                    sort: palette.map(x => 0)
                 })
-                set({palette, sort: palette.map(_ => 0)})
             },
 
             setColor
