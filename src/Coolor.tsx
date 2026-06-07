@@ -8,6 +8,14 @@ import nearestColor from 'nearest-color';
 import {useEffect, useMemo, useRef} from "preact/compat";
 
 css(`<style>
+    div.coolor.sorting svg.button,
+    div.coolor.sorting:hover svg.button {
+        opacity: 0;
+    }
+    div.coolor.sorting:hover svg.button.sort{
+        opacity: 1;
+        background-color: #fff4;
+    }
     div.coolor:hover svg.button {
         opacity: 1;
     }
@@ -80,7 +88,7 @@ export function Coolor({index, store}: {
         addEventListener("pointermove", move);
     }
 
-    return <div ref={ref} className={"coolor"} style={{
+    let style = {
         transform: `translate(${offset}px)`,
         transition: sortingIndex !== -1 && sortingIndex!==index ? `200ms` : '0ms',
         backgroundColor: palette[index],
@@ -90,7 +98,13 @@ export function Coolor({index, store}: {
         alignItems: 'center',
         gap: 5,
         zIndex: 0
-    }}>
+    };
+
+    return <div
+        ref={ref}
+        className={`coolor ${sortingIndex !== -1 ? "sorting": ""}`}
+        style={style}
+    >
         <ImageButton
             color={color}
             src={'src/icons/trash.svg'}
@@ -107,6 +121,7 @@ export function Coolor({index, store}: {
             onClick={() => shades(index)}
         />
         <ImageButton
+            className={"sort"}
             color={color}
             src={'src/icons/left-right-arrow.svg'}
             onPointerDown={startMove}
