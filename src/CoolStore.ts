@@ -14,6 +14,7 @@ export type CoolStore = CoolStoreInitialData & {
     isLocked: boolean[];
     isShades: boolean[];
     sort: number[];
+    sortingIndex: number;
     setPalette(palette: Palette);
     lock(index: number);
     deleteColor(index: number);
@@ -23,6 +24,7 @@ export type CoolStore = CoolStoreInitialData & {
     setColor(index:number, color:Color);
     setSort(sort: number[]);
     applySort(width: number);
+    setSortingIndex(index: number);
 }
 
 type Mode = 'isLocked' | 'isShades';
@@ -45,6 +47,7 @@ export function createCoolStore({palette}: CoolStoreInitialData): CoolStoreType 
             isLocked: palette.map(() => false),
             isShades: palette.map(() => false),
             sort: palette.map(() => 0),
+            sortingIndex: -1,
 
             setPalette(palette: Palette) {
                 set({palette, isShades: palette.map(x => false)});
@@ -94,8 +97,13 @@ export function createCoolStore({palette}: CoolStoreInitialData): CoolStoreType 
                 set({
                     palette: tmp.map(x => x[0]),
                     isLocked: tmp.map(x => x[1]),
-                    sort: palette.map(x => 0)
+                    sort: palette.map(x => 0),
+                    sortingIndex: -1,
                 })
+            },
+
+            setSortingIndex(sortingIndex: number){
+                set({sortingIndex})
             },
 
             setColor

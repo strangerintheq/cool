@@ -5,7 +5,7 @@ import {getLuminance, hex2rgb} from "./colorFunctions";
 import {css} from "./Css";
 import {colornames} from 'color-name-list';
 import nearestColor from 'nearest-color';
-import {useEffect, useRef} from "preact/compat";
+import {useEffect, useMemo, useRef} from "preact/compat";
 
 css(`<style>
     div.coolor:hover svg.button {
@@ -37,29 +37,32 @@ export function Coolor({index, store}: {
     const randomizeSingle = store(x => x.randomizeSingle);
     const shades = store(x => x.shades);
     const dark = getLuminance(...hex2rgb(palette[index])) > 0.5;
-    const name = getColorName(palette[index]);
+    const name = useMemo(() => getColorName(palette[index]), [palette, index]);
     const color = dark ? "#000000" : "#ffffff";
+    const sortingIndex = store(x => x.sortingIndex);
     const offset = store(x => x.sort)[index]
     const setSort = store(x => x.setSort);
     const applySort = store(x => x.applySort);
+    const setSortingIndex = store(x => x.setSortingIndex);
 
     function startMove(e) {
         function move(e1) {
+            setSortingIndex(index)
             const node = ref.current as HTMLDivElement;
             const width = node.clientWidth;
             const n = palette.length;
             let dx = e1.clientX - e.clientX;
-            dx = Math.min(dx, width * (n - index - 1))
-            dx = Math.max(dx, -width * (index))
-            node.style.transition = `0s`;
-            node.style.zIndex = "1";
+            dx = Math.min(dx, width * (n - index - 1));
+            dx = Math.max(dx, -width * (index));
+            // node.style.transition = `0s`;
+            node.style.zIndex = "100";
             setSort(palette.map((_, i) => {
                 if (i === index)
                     return dx;
                 if (i > index && dx > (i - index - 0.5) * width)
-                    return -width
+                    return -width;
                 else if (i < index && dx < -(index - i - 0.5) * width)
-                    return width
+                    return width;
                 return 0
             }))
         }
@@ -79,13 +82,14 @@ export function Coolor({index, store}: {
 
     return <div ref={ref} className={"coolor"} style={{
         transform: `translate(${offset}px)`,
-        // transition: `200ms`,
+        transition: sortingIndex !== -1 && sortingIndex!==index ? `200ms` : '0ms',
         backgroundColor: palette[index],
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: 5
+        gap: 5,
+        zIndex: 0
     }}>
         <ImageButton
             color={color}
