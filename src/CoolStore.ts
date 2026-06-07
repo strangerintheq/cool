@@ -76,13 +76,12 @@ export function createCoolStore({palette}: CoolStoreInitialData): CoolStoreType 
             },
 
             setSort(sort: number[]) {
-                set({sort});
+                set({sort, isShades: get().palette.map(x => false)});
             },
 
             applySort(width: number) {
                 let {sort, palette} = get();
                 palette = [...palette]
-
                 palette.sort((a, b) => {
                     let ia = palette.indexOf(a);
                     let ib = palette.indexOf(b)
