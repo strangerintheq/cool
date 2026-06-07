@@ -39,11 +39,11 @@ export function Insert({className, index, store}: {
     const insert = store(x => x.insert);
     return <div className={"insert " + className}>
         <div className={"left"}>
-            <InsertBtn onClick={() => insert(index)}/>
+            <InsertBtn onClick={() => insert(index - 1)}/>
         </div>
         <div/>
         <div className={"right"}>
-            <InsertBtn onClick={() => insert(index + 1)}/>
+            <InsertBtn onClick={() => insert(index)}/>
         </div>
     </div>
 }

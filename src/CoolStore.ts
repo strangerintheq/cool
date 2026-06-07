@@ -1,4 +1,5 @@
 import {create, StoreApi, UseBoundStore} from "zustand";
+import {hex2rgb, hsl2rgb, rgb2hex, rgb2hsl} from "./colorFunctions";
 
 export type CoolStoreType = UseBoundStore<StoreApi<CoolStore>>;
 
@@ -108,6 +109,15 @@ export function createCoolStore({palette}: CoolStoreInitialData): CoolStoreType 
             },
 
             insert(index: number) {
+                const palette = [...get().palette];
+                const [ar, ag, ab] = hex2rgb(palette[index]);
+                const [br, bg, bb] = hex2rgb(palette[index + 1]);
+                const r = ar / 2 + br / 2;
+                const g = ag / 2 + bg / 2;
+                const b = ab / 2 + bb / 2;
+                const newColor = rgb2hex(r, g, b);
+                palette.splice(index + 1, 0, newColor)
+                set({palette})
             },
 
             setColor
@@ -124,3 +134,14 @@ function generatePalette(palette: Color[], isLocked: boolean[]): Palette {
     return palette.map((color, index) => isLocked[index] ? color : randomColor());
 }
 
+function lerpAngleDeg(start, end, t) {
+    // 1. Находим разницу между углами
+    let difference = (end - start) % 360;
+
+    // 2. Нормализуем остаток в диапазон от -360 до 360
+    let shortestPath = ((2 * difference) % 360) - difference;
+
+    // 3. Считаем результат и приводим строго к диапазону [0, 360)
+    let result = start + shortestPath * t;
+    return (result % 360 + 360) % 360;
+}

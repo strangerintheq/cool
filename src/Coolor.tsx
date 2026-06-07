@@ -47,14 +47,12 @@ export function Coolor({index, store}: {
     index: number,
     store: CoolStoreType
 }) {
-
     const ref = useRef();
     const palette = store(x => x.palette);
-    const dark = useMemo(() => getLuminance(...hex2rgb(palette[index])) > 0.5, [palette, index]);
-    const name = useMemo(() => getColorName(palette[index]), [palette, index]);
-    const color = dark ? "#000000" : "#ffffff";
     const sortingIndex = store(x => x.sortingIndex);
     const offset = store(x => x.sort)[index]
+    const color = useMemo(() => getLuminance(...hex2rgb(palette[index])) > 0.5 ? "#000000" : "#ffffff", [palette, index]);
+    const name = useMemo(() => getColorName(palette[index]), [palette, index]);
     const className = `coolor ${sortingIndex !== -1 ? "sorting": ""}`;
     const style = {
         transform: `translate(${offset}px)`,
@@ -64,30 +62,19 @@ export function Coolor({index, store}: {
     return <div ref={ref} className={className} style={style}>
         <div className={"top-part"}/>
         <div className={"center-part"}>
-            <Insert className={"left"} index={index} store={store}/>
+            {index === 0 ? <div/> : <Insert className={"left"} index={index} store={store}/>}
             <div className={"buttons"}>
                 <Buttons color={color} store={store} index={index} refObj={ref}/>
             </div>
-            <Insert className={"right"} index={index} store={store}/>
+            {index === palette.length - 1 ? <div/> : <Insert className={"right"} index={index} store={store}/>}
         </div>
         <div className={"bottom-part"}>
-            <div style={{fontFamily: "monospace", userSelect: 'none', marginTop: 40, color}}
-                 onClick={() => {
-                     //@ts-ignore
-                     // const eyeDropper = new EyeDropper();
-                     // eyeDropper.open()
-                     //     .then(result => {
-                     //         console.log("Выбранный цвет:", result.sRGBHex);
-                     //     })
-                     //     .catch(e => {
-                     //         console.log("Пользователь отменил выбор или произошла ошибка");
-                     //     });
-                 }}
-            >
+            <div style={{fontFamily: "monospace", color}}>
+                {palette[index]}
+            </div>
+            <div style={{fontFamily: "monospace", userSelect: 'none',  color}}>
                 {name.name}
-                {/*({name.distance.toFixed(1)})*/}
             </div>
         </div>
-
     </div>
 }
