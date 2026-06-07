@@ -25,6 +25,7 @@ export type CoolStore = CoolStoreInitialData & {
     setSort(sort: number[]);
     applySort(width: number);
     setSortingIndex(index: number);
+    insert(index: number);
 }
 
 type Mode = 'isLocked' | 'isShades';
@@ -104,6 +105,9 @@ export function createCoolStore({palette}: CoolStoreInitialData): CoolStoreType 
 
             setSortingIndex(sortingIndex: number){
                 set({sortingIndex})
+            },
+
+            insert(index: number) {
             },
 
             setColor
