@@ -47,7 +47,7 @@ export function createCoolStore({palette}: CoolStoreInitialData): CoolStoreType 
             sort: palette.map(() => 0),
 
             setPalette(palette: Palette) {
-                set({palette});
+                set({palette, isShades: palette.map(x => false)});
             },
 
             lock(index: number) {
@@ -62,7 +62,10 @@ export function createCoolStore({palette}: CoolStoreInitialData): CoolStoreType 
 
             randomizeNotLocked() {
                 const {palette, isLocked} = get();
-                set({palette: generatePalette(palette, isLocked)});
+                set({
+                    palette: generatePalette(palette, isLocked),
+                    isShades: palette.map(x => false)
+                });
             },
 
             randomizeSingle(index: number) {
