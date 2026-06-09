@@ -19,15 +19,27 @@ css(`<style>
     }
 </style>`)
 
-export function ImageButton({className, src, onClick, color, size = 32, pad = 3, onPointerDown}:{
-    src: string;
-    onClick?;
-    onPointerDown?;
-    color: Color;
-    size?: number;
-    pad?: number;
-    className?:string;
-}) {
+export function ImageButton(
+    {
+        className,
+        src,
+        onClick,
+        color,
+        size = 32,
+        pad = 3,
+        onPointerDown,
+        disabled
+    } : {
+        src: string;
+        onClick?;
+        onPointerDown?;
+        color: Color;
+        size?: number;
+        pad?: number;
+        className?:string;
+        disabled?:boolean;
+    }
+) {
 
     const ref = useRef();
     useEffect(() => {
@@ -37,7 +49,11 @@ export function ImageButton({className, src, onClick, color, size = 32, pad = 3,
             ref.current.innerHTML = div.querySelector("svg").innerHTML;
         })
     }, [src]);
+
     return <svg
+        style={{
+            pointerEvents: disabled ? "none" : "unset"
+        }}
         onPointerDown={onPointerDown}
         className={"button " + className}
         onClick={onClick}

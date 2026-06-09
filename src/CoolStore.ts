@@ -8,24 +8,26 @@ export type Color = `#${string}`
 export type Palette = Color[];
 
 export type CoolStoreInitialData = {
-    palette: Palette;
+    palette?: Palette;
 }
 
 export type CoolStore = CoolStoreInitialData & {
     isLocked: boolean[];
-    isShades: boolean[];
-    sort: number[];
+    shadesIndex: number;
+    pickerIndex: number;
     sortingIndex: number;
+    sort: number[];
     setPalette(palette: Palette);
-    lock(index: number);
+    setSortingIndex(index: number);
+    toggleLockIndex(index: number);
+    setShadesIndex(index: number);
+    setPickerIndex(index: number);
     deleteColor(index: number);
-    shades(index: number);
     randomizeNotLocked();
     randomizeSingle(index: number);
-    setColor(index:number, color:Color);
+    setColor(index: number, color: Color);
     setSort(sort: number[]);
     applySort(width: number);
-    setSortingIndex(index: number);
     insert(index: number);
 }
 
@@ -40,36 +42,46 @@ export function createCoolStore({palette}: CoolStoreInitialData): CoolStoreType 
         function setColor(index: number, color: Color) {
             const palette = [...get().palette];
             palette[index] = color;
-            set({palette, isShades: palette.map(x => false)});
+            set({palette, shadesIndex: -1, sortingIndex: -1});
         }
 
         return {
 
-            palette,
+            palette: palette,
             isLocked: palette.map(() => false),
-            isShades: palette.map(() => false),
             sort: palette.map(() => 0),
+            shadesIndex: -1,
             sortingIndex: -1,
+            pickerIndex: -1,
 
             setPalette(palette: Palette) {
-                set({palette, isShades: palette.map(x => false)});
+                set({palette, shadesIndex: -1, pickerIndex: -1});
             },
 
-            lock(index: number) {
+            toggleLockIndex(index: number) {
                 const isLocked = [...get().isLocked];
                 isLocked[index] = !isLocked[index];
                 set({isLocked});
             },
 
-            shades(index: number) {
-                set({isShades: get().palette.map((_, i) => i === index)});
+            setShadesIndex(shadesIndex: number) {
+                set({shadesIndex});
+            },
+
+            setSortingIndex(sortingIndex: number) {
+                set({sortingIndex})
+            },
+
+            setPickerIndex(pickerIndex: number) {
+                set({pickerIndex})
             },
 
             randomizeNotLocked() {
                 const {palette, isLocked} = get();
                 set({
                     palette: generatePalette(palette, isLocked),
-                    isShades: palette.map(x => false)
+                    shadesIndex: -1,
+                    pickerIndex: -1
                 });
             },
 
@@ -84,7 +96,7 @@ export function createCoolStore({palette}: CoolStoreInitialData): CoolStoreType 
             },
 
             setSort(sort: number[]) {
-                set({sort, isShades: get().palette.map(x => false)});
+                set({sort, shadesIndex: -1, pickerIndex: -1});
             },
 
             applySort(width: number) {
@@ -92,9 +104,9 @@ export function createCoolStore({palette}: CoolStoreInitialData): CoolStoreType 
                 const tmp = palette
                     .map((x: Color, i: number) => [x, isLocked[i]])
                     .sort((a: [Color, boolean], b: [Color, boolean]) => {
-                        let ia = palette.indexOf(a[0] as Color);
-                        let ib = palette.indexOf(b[0] as Color)
-                        return (ia*width+sort[ia]) - (ib*width+sort[ib])
+                        const ia = palette.indexOf(a[0] as Color);
+                        const ib = palette.indexOf(b[0] as Color);
+                        return (ia * width + sort[ia]) - (ib * width + sort[ib])
                     }) as [Color, boolean][];
                 set({
                     palette: tmp.map(x => x[0]),
@@ -102,10 +114,6 @@ export function createCoolStore({palette}: CoolStoreInitialData): CoolStoreType 
                     sort: palette.map(x => 0),
                     sortingIndex: -1,
                 })
-            },
-
-            setSortingIndex(sortingIndex: number){
-                set({sortingIndex})
             },
 
             insert(index: number) {
@@ -134,14 +142,3 @@ function generatePalette(palette: Color[], isLocked: boolean[]): Palette {
     return palette.map((color, index) => isLocked[index] ? color : randomColor());
 }
 
-function lerpAngleDeg(start, end, t) {
-    // 1. Находим разницу между углами
-    let difference = (end - start) % 360;
-
-    // 2. Нормализуем остаток в диапазон от -360 до 360
-    let shortestPath = ((2 * difference) % 360) - difference;
-
-    // 3. Считаем результат и приводим строго к диапазону [0, 360)
-    let result = start + shortestPath * t;
-    return (result % 360 + 360) % 360;
-}

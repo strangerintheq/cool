@@ -10,27 +10,38 @@ export function Buttons({index, store, color, refObj}: {
     color: Color;
     refObj: RefObject<HTMLDivElement>
 }) {
+    const palette = store(x => x.palette);
     const isLocked = store(x => x.isLocked);
     const deleteColor = store(x => x.deleteColor);
-    const lock = store(x => x.lock);
+    const toggleLockIndex = store(x => x.toggleLockIndex);
     const randomizeSingle = store(x => x.randomizeSingle);
-    const shades = store(x => x.shades);
+    const setShadesIndex = store(x => x.setShadesIndex);
+    const setPickerIndex = store(x => x.setPickerIndex);
 
     return <>
         <ImageButton
+            disabled={isLocked[index] || palette.length < 3}
             color={color}
             src={'src/icons/trash.svg'}
             onClick={() => deleteColor(index)}
         />
         <ImageButton
+            disabled={isLocked[index]}
             color={color}
             src={'src/icons/shuffle.svg'}
             onClick={() => randomizeSingle(index)}
         />
         <ImageButton
+            disabled={isLocked[index]}
             color={color}
             src={'src/icons/adjustments.svg'}
-            onClick={() => shades(index)}
+            onClick={() => setShadesIndex(index)}
+        />
+        <ImageButton
+            disabled={isLocked[index]}
+            color={color}
+            src={'src/icons/palette.svg'}
+            onClick={() => setPickerIndex(index)}
         />
         <SortButton
             refObj={refObj}
@@ -40,12 +51,8 @@ export function Buttons({index, store, color, refObj}: {
         />
         <ImageButton
             color={color}
-            src={'src/icons/palette.svg'}
-        />
-        <ImageButton
-            color={color}
             src={isLocked[index] ? 'src/icons/lock.svg' : 'src/icons/unlock.svg'}
-            onClick={() => lock(index)}
+            onClick={() => toggleLockIndex(index)}
         />
     </>
 }

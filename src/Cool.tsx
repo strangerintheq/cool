@@ -3,10 +3,12 @@ import {CoolStoreType} from "./CoolStore";
 import {Coolor} from "./Coolor";
 import {useEffect} from "preact/compat";
 import {Shades} from "./Shades";
+import {Picker} from "./Picker";
 
 export function Cool({store}:{store: CoolStoreType}) {
     const palette = store(x => x.palette)
-    const isShades = store(x => x.isShades)
+    const shadesIndex = store(x => x.shadesIndex)
+    const pickerIndex = store(x => x.pickerIndex)
     const randomizeNotLocked = store(x => x.randomizeNotLocked)
     useEffect(() => {
         const keydown = e => e.code === "Space" && randomizeNotLocked();
@@ -20,9 +22,9 @@ export function Cool({store}:{store: CoolStoreType}) {
         gridTemplateColumns: palette.map(x => '1fr').join(" ")
     }}>
         {palette.map((_, index) => {
-            return isShades[index] ?
-                <Shades index={index} store={store}/> :
-                <Coolor index={index} store={store}/>;
+            return shadesIndex === index ? <Shades index={index} store={store}/> :
+                   pickerIndex === index ? <Picker index={index} store={store}/> :
+                                           <Coolor index={index} store={store}/> ;
         })}
     </div>
 }
