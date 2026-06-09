@@ -10,12 +10,17 @@ import {rgb2hex} from "./colorFunctions";
 export function Toolbar({store}: { store: CoolStoreType }) {
     const randomizeNotLocked = store(x => x.randomizeNotLocked)
     const setPalette = store(x => x.setPalette)
+    const setDesign = store(x => x.setDesign)
+    const design = store(x => x.design)
     function fromImage() {
         triggerImageUpload(setPalette)
     }
     return <div>
         <ImageButton src={shuffle} color={"#000000"} onClick={randomizeNotLocked}/>
         <ImageButton src={shuffle} color={"#000000"} onClick={fromImage}/>
+        <ImageButton src={shuffle} color={"#000000"} onClick={() => {
+            setDesign(design ? null : '25')
+        }}/>
     </div>;
 }
 

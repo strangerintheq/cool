@@ -5,6 +5,8 @@ import {Toolbar} from "./Toolbar";
 import {Design} from "./Design";
 
 export function App({store}:{store: CoolStoreType}) {
+    const design = store(x => x.design);
+    const main = <Cool store={store}/>
     return <div style={{
         display: 'grid',
         height: '100%',
@@ -12,13 +14,14 @@ export function App({store}:{store: CoolStoreType}) {
         gridTemplateRows: '30px 1fr'
     }}>
         <Toolbar store={store} />
-        <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr'
-        }}>
-            <Cool store={store}/>
-            <Design store={store}/>
-        </div>
-
+        {
+            design ? <div style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr'
+            }}>
+                {main}
+                <Design store={store}/>
+            </div>: main
+        }
     </div>
 }

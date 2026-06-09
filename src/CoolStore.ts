@@ -1,5 +1,10 @@
 import {create, StoreApi, UseBoundStore} from "zustand";
 import {hex2rgb, hsl2rgb, rgb2hex, rgb2hsl} from "./colorFunctions";
+import {generateNeon, generatePastel} from "./generate-logic/aesthetic-moods-generator.js";
+import {generateSpaceDisplacement, generateTealOrange} from "./generate-logic/cinema-space-generator";
+import {generateDesignSystemScale} from "./generate-logic/design-system-generator.js";
+import {generateClassicGeometric, generateSplitComplementary} from "./generate-logic/geo-harmony-generator.js";
+import {generateControlledChaos, generateGoldenRatio} from "./generate-logic/math-chaos-generator.js";
 
 export type CoolStoreType = UseBoundStore<StoreApi<CoolStore>>;
 
@@ -11,12 +16,15 @@ export type CoolStoreInitialData = {
     palette?: Palette;
 }
 
+export type DesignType = '25'
+
 export type CoolStore = CoolStoreInitialData & {
     isLocked: boolean[];
     shadesIndex: number;
     pickerIndex: number;
     sortingIndex: number;
     sort: number[];
+    design: DesignType;
     setPalette(palette: Palette);
     setSortingIndex(index: number);
     toggleLockIndex(index: number);
@@ -29,6 +37,7 @@ export type CoolStore = CoolStoreInitialData & {
     setSort(sort: number[]);
     applySort(width: number);
     insert(index: number);
+    setDesign(design: DesignType);
 }
 
 type Mode = 'isLocked' | 'isShades';
@@ -53,6 +62,7 @@ export function createCoolStore({palette}: CoolStoreInitialData): CoolStoreType 
             shadesIndex: -1,
             sortingIndex: -1,
             pickerIndex: -1,
+            design: null,
 
             setPalette(palette: Palette) {
                 set({palette, shadesIndex: -1, pickerIndex: -1});
@@ -128,6 +138,10 @@ export function createCoolStore({palette}: CoolStoreInitialData): CoolStoreType 
                 set({palette})
             },
 
+            setDesign(design: DesignType) {
+              set({design})
+            },
+
             setColor
 
         };
@@ -138,7 +152,30 @@ function randomColor(): Color {
     return `#${[...Array(6)].map(x => ((Math.random() * 16) | 0).toString(16)).join("")}`;
 }
 
+function pick<T>(arr: T[]):T {
+    return arr[Math.floor(Math.random()*arr.length)]
+}
+
 function generatePalette(palette: Color[], isLocked: boolean[]): Palette {
-    return palette.map((color, index) => isLocked[index] ? color : randomColor());
+    let baseHex = randomColor();
+    let newVar = pick([
+        (baseHex) => generatePastel(baseHex, palette.length),
+        (baseHex) => generateNeon(baseHex, palette.length),
+        (baseHex) => generateSpaceDisplacement(baseHex, palette.length),
+        (baseHex) => generateDesignSystemScale(baseHex, palette.length),
+        (baseHex) => generateClassicGeometric(baseHex, 'analogous', palette.length),
+        (baseHex) => generateClassicGeometric(baseHex, 'mono', palette.length),
+        (baseHex) => generateClassicGeometric(baseHex, 'complementary', palette.length),
+        (baseHex) => generateClassicGeometric(baseHex, 'tetradic', palette.length),
+        (baseHex) => generateClassicGeometric(baseHex, 'triadic', palette.length),
+        (baseHex) => generateSplitComplementary(baseHex, palette.length),
+        (baseHex) => generateControlledChaos(baseHex, palette.length),
+        (baseHex) => generateGoldenRatio(baseHex, palette.length),
+    ])(baseHex) as Palette;
+    if (Math.random() > 0.5)
+        return newVar.reverse()
+    return palette.map((color, index) => isLocked[index] ? color : newVar[index])
+
+    // return palette;
 }
 
