@@ -4,6 +4,19 @@ import {Color, CoolStoreType} from "./CoolStore";
 import {RefObject} from "preact";
 import {SortButton} from "./SortButton";
 
+//@ts-ignore
+import lockIcon from "./icons/lock.svg?raw"
+//@ts-ignore
+import unlockIcon from "./icons/unlock.svg?raw"
+//@ts-ignore
+import paletteIcon from "./icons/palette.svg?raw"
+//@ts-ignore
+import trashIcon from "./icons/trash.svg?raw"
+//@ts-ignore
+import shuffleIcon from "./icons/shuffle.svg?raw"
+//@ts-ignore
+import adjustmentsIcon from "./icons/adjustments.svg?raw"
+
 export function Buttons({index, store, color, refObj}: {
     index: number;
     store: CoolStoreType;
@@ -22,25 +35,25 @@ export function Buttons({index, store, color, refObj}: {
         <ImageButton
             disabled={isLocked[index] || palette.length < 3}
             color={color}
-            src={'src/icons/trash.svg'}
+            src={trashIcon}
             onClick={() => deleteColor(index)}
         />
         <ImageButton
             disabled={isLocked[index]}
             color={color}
-            src={'src/icons/shuffle.svg'}
+            src={shuffleIcon}
             onClick={() => randomizeSingle(index)}
         />
         <ImageButton
             disabled={isLocked[index]}
             color={color}
-            src={'src/icons/adjustments.svg'}
+            src={adjustmentsIcon}
             onClick={() => setShadesIndex(index)}
         />
         <ImageButton
             disabled={isLocked[index]}
             color={color}
-            src={'src/icons/palette.svg'}
+            src={paletteIcon}
             onClick={() => setPickerIndex(index)}
         />
         <SortButton
@@ -51,7 +64,7 @@ export function Buttons({index, store, color, refObj}: {
         />
         <ImageButton
             color={color}
-            src={isLocked[index] ? 'src/icons/lock.svg' : 'src/icons/unlock.svg'}
+            src={isLocked[index] ? lockIcon : unlockIcon}
             onClick={() => toggleLockIndex(index)}
         />
     </>

@@ -12,6 +12,8 @@ css(`<style>
         z-index: 1;
     }
     div.coolor {
+        /*border-top-left-radius: 2px;*/
+        /*border-top-right-radius: 2px;*/
         display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: 100px 1fr 100px;

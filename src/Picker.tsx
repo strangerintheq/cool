@@ -1,6 +1,5 @@
 import {CoolStoreType} from "./CoolStore";
 import * as React from "preact/compat";
-import {useEffect} from "preact/compat";
 
 export function Picker({index, store}: {
     index: number;

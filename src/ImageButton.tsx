@@ -1,5 +1,5 @@
 import * as React from "preact/compat";
-import {useEffect, useRef} from "preact/compat";
+import {useEffect, useMemo, useRef} from "preact/compat";
 import {css} from "./Css";
 import {Color} from "./CoolStore";
 
@@ -41,14 +41,10 @@ export function ImageButton(
     }
 ) {
 
-    const ref = useRef();
-    useEffect(() => {
-        fetch(src).then(r => r.text()).then(r => {
-            div.innerHTML = r;
-            //@ts-ignore
-            ref.current.innerHTML = div.querySelector("svg").innerHTML;
-        })
-    }, [src]);
+    const imgData = useMemo(() => {
+        div.innerHTML = src
+        return div.querySelector("svg")?.innerHTML
+    }, [src])
 
     return <svg
         style={{
@@ -62,6 +58,7 @@ export function ImageButton(
         viewBox={[0-pad,0-pad,24+pad*2,24+pad*2].join(" ")}
         fill={'none'}
         stroke={color}
-        ref={ref}
+        // ref={ref}
+        dangerouslySetInnerHTML={{__html: imgData }}
     />;
 }

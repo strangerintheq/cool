@@ -16,7 +16,6 @@ export function Cool({store}:{store: CoolStoreType}) {
         return () => removeEventListener("keydown", keydown);
     });
     return <div style={{
-        height: '100%',
         display: 'grid',
         gridTemplateRows: '1fr',
         gridTemplateColumns: palette.map(x => '1fr').join(" ")

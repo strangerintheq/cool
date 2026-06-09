@@ -3,6 +3,9 @@ import {ImageButton} from "./ImageButton";
 import {Color, CoolStoreType} from "./CoolStore";
 import {RefObject} from "preact";
 
+//@ts-ignore
+import lrArrow from "./icons/left-right-arrow.svg?raw"
+
 export function SortButton({index, store, color, refObj}: {
     index: number;
     store: CoolStoreType;
@@ -47,7 +50,7 @@ export function SortButton({index, store, color, refObj}: {
     return <ImageButton
         className={"sort"}
         color={color}
-        src={'src/icons/left-right-arrow.svg'}
+        src={lrArrow}
         onPointerDown={startMove}
     />
 }

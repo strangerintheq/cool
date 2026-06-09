@@ -5,14 +5,15 @@
     "start": "vite"
   },
   "dependencies": {
-    "preact": "latest",
-    "zustand": "latest",
     "color-name-list": "^14.40.0",
-    "nearest-color": "^0.4.4"
+    "colorthief": "^3.3.1",
+    "nearest-color": "^0.4.4",
+    "preact": "latest",
+    "zustand": "latest"
   },
   "devDependencies": {
-    "vite": "latest",
+    "@types/node": "^24.9.1",
     "@vitejs/plugin-react": "^5.0.4",
-    "@types/node": "^24.9.1"
+    "vite": "latest"
   }
 }
