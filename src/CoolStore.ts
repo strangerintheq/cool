@@ -5,6 +5,7 @@ import {generateSpaceDisplacement, generateTealOrange} from "./generate-logic/ci
 import {generateDesignSystemScale} from "./generate-logic/design-system-generator.js";
 import {generateClassicGeometric, generateSplitComplementary} from "./generate-logic/geo-harmony-generator.js";
 import {generateControlledChaos, generateGoldenRatio} from "./generate-logic/math-chaos-generator.js";
+import {generateAmoledDark, generateUiAccessible} from "./generate-logic/uiux";
 
 export type CoolStoreType = UseBoundStore<StoreApi<CoolStore>>;
 
@@ -171,9 +172,11 @@ function generatePalette(palette: Color[], isLocked: boolean[]): Palette {
         x => generateSplitComplementary(x, i),
         x => generateControlledChaos(x, i),
         x => generateGoldenRatio(x, i),
+        x => generateUiAccessible(x, i),
+        x => generateAmoledDark(x, i),
     ])(randomColor()) as Palette;
-    if (Math.random() > 0.5)
-        p = p.reverse()
+    // if (Math.random() > 0.5)
+    //     p = p.reverse()
     p = palette.map((c, j) => isLocked[j] ? c : p[j]);
     return p
 
