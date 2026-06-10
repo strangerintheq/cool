@@ -157,24 +157,25 @@ function pick<T>(arr: T[]):T {
 }
 
 function generatePalette(palette: Color[], isLocked: boolean[]): Palette {
-    let baseHex = randomColor();
-    let newVar = pick([
-        (baseHex) => generatePastel(baseHex, palette.length),
-        (baseHex) => generateNeon(baseHex, palette.length),
-        (baseHex) => generateSpaceDisplacement(baseHex, palette.length),
-        (baseHex) => generateDesignSystemScale(baseHex, palette.length),
-        (baseHex) => generateClassicGeometric(baseHex, 'analogous', palette.length),
-        (baseHex) => generateClassicGeometric(baseHex, 'mono', palette.length),
-        (baseHex) => generateClassicGeometric(baseHex, 'complementary', palette.length),
-        (baseHex) => generateClassicGeometric(baseHex, 'tetradic', palette.length),
-        (baseHex) => generateClassicGeometric(baseHex, 'triadic', palette.length),
-        (baseHex) => generateSplitComplementary(baseHex, palette.length),
-        (baseHex) => generateControlledChaos(baseHex, palette.length),
-        (baseHex) => generateGoldenRatio(baseHex, palette.length),
-    ])(baseHex) as Palette;
+    let i = palette.length;
+    let p = pick([
+        x => generatePastel(x, i),
+        x => generateNeon(x, i),
+        x => generateSpaceDisplacement(x, i),
+        x => generateDesignSystemScale(x, i),
+        x => generateClassicGeometric(x, 'analogous', i),
+        x => generateClassicGeometric(x, 'mono', i),
+        x => generateClassicGeometric(x, 'complementary', i),
+        x => generateClassicGeometric(x, 'tetradic', i),
+        x => generateClassicGeometric(x, 'triadic', i),
+        x => generateSplitComplementary(x, i),
+        x => generateControlledChaos(x, i),
+        x => generateGoldenRatio(x, i),
+    ])(randomColor()) as Palette;
     if (Math.random() > 0.5)
-        return newVar.reverse()
-    return palette.map((color, index) => isLocked[index] ? color : newVar[index])
+        p = p.reverse()
+    p = palette.map((c, j) => isLocked[j] ? c : p[j]);
+    return p
 
     // return palette;
 }
