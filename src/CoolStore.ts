@@ -26,6 +26,8 @@ export type CoolStore = CoolStoreInitialData & {
     sortingIndex: number;
     sort: number[];
     design: DesignType;
+    undo();
+    redo();
     setPalette(palette: Palette);
     setSortingIndex(index: number);
     toggleLockIndex(index: number);
@@ -141,6 +143,13 @@ export function createCoolStore({palette}: CoolStoreInitialData): CoolStoreType 
 
             setDesign(design: DesignType) {
               set({design})
+            },
+
+            undo() {
+
+            },
+            redo() {
+
             },
 
             setColor

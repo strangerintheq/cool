@@ -4,10 +4,20 @@ import {ImageButton} from "./ImageButton";
 import { getPalette } from 'colorthief';
 
 //@ts-ignore
-import shuffle from "./icons/shuffle.svg?raw"
+import undoIcon from "./icons/undo.svg?raw"
+//@ts-ignore
+import redoIcon from "./icons/redo.svg?raw"
+//@ts-ignore
+import shuffleIcon from "./icons/shuffle.svg?raw"
+//@ts-ignore
+import photoIcon from "./icons/photo.svg?raw"
+//@ts-ignore
+import collageIcon from "./icons/collage.svg?raw"
 import {rgb2hex} from "./colorFunctions";
 
 export function Toolbar({store}: { store: CoolStoreType }) {
+    const undo = store(x => x.undo)
+    const redo = store(x => x.redo)
     const randomizeNotLocked = store(x => x.randomizeNotLocked)
     const setPalette = store(x => x.setPalette)
     const setDesign = store(x => x.setDesign)
@@ -16,9 +26,11 @@ export function Toolbar({store}: { store: CoolStoreType }) {
         triggerImageUpload(setPalette)
     }
     return <div>
-        <ImageButton src={shuffle} color={"#000000"} onClick={randomizeNotLocked}/>
-        <ImageButton src={shuffle} color={"#000000"} onClick={fromImage}/>
-        <ImageButton src={shuffle} color={"#000000"} onClick={() => {
+        <ImageButton src={undoIcon} color={"#000000"} onClick={undo}/>
+        <ImageButton src={redoIcon} color={"#000000"} onClick={redo}/>
+        <ImageButton src={shuffleIcon} color={"#000000"} onClick={randomizeNotLocked}/>
+        <ImageButton src={photoIcon} color={"#000000"} onClick={fromImage}/>
+        <ImageButton src={collageIcon} color={"#000000"} onClick={() => {
             setDesign(design ? null : '25')
         }}/>
     </div>;
